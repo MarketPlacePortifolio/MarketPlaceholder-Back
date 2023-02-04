@@ -3,6 +3,7 @@ import faker from "@faker-js/faker";
 
 describe("createUserSchema", () => {
   const generateValidInput = () => ({
+    name: faker.internet.userName(),
     email: faker.internet.email(),
     password: faker.internet.password(6),
   });
@@ -40,6 +41,26 @@ describe("createUserSchema", () => {
     it("should return error if password is shorter than 6 characters", () => {
       const input = generateValidInput();
       input.password = faker.lorem.word(5);
+
+      const { error } = createUserSchema.validate(input);
+
+      expect(error).toBeDefined();
+    });
+  });
+
+  describe("when name is not valid", () => {
+    it("should return error if name is not present", () => {
+      const input = generateValidInput();
+      delete input.name;
+
+      const { error } = createUserSchema.validate(input);
+
+      expect(error).toBeDefined();
+    });
+
+    it("should return error if password is shorter than 3 characters", () => {
+      const input = generateValidInput();
+      input.password = faker.lorem.word(2);
 
       const { error } = createUserSchema.validate(input);
 

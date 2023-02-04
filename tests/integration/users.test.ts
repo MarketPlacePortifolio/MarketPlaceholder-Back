@@ -31,6 +31,7 @@ describe("POST /users", () => {
 
   describe("when body is valid", () => {
     const generateValidBody = () => ({
+      name: faker.internet.userName(),
       email: faker.internet.email(),
       password: faker.internet.password(6),
     });
@@ -54,6 +55,7 @@ describe("POST /users", () => {
       expect(response.body).toEqual({
         id: expect.any(Number),
         email: body.email,
+        name: body.name,
       });
     });
 
@@ -76,6 +78,7 @@ describe("POST /users", () => {
       expect(user).toEqual(
         expect.objectContaining({
           id: response.body.id,
+          name: body.name,
           email: body.email,
         }),
       );

@@ -3,11 +3,12 @@ import { User } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { duplicatedEmailError } from "./errors";
 
-export async function createUser({ email, password }: CreateUserParams): Promise<User> {
+export async function createUser({ name, email, password }: CreateUserParams): Promise<User> {
   await validateUniqueEmailOrFail(email);
 
   const hashedPassword = await bcrypt.hash(password, 12);
   return userRepository.create({
+    name,
     email,
     password: hashedPassword,
   });
@@ -20,7 +21,7 @@ async function validateUniqueEmailOrFail(email: string) {
   }
 }
 
-export type CreateUserParams = Pick<User, "email" | "password">;
+export type CreateUserParams = Pick<User, "email" | "password" | "name">;
 
 const userService = {
   createUser,

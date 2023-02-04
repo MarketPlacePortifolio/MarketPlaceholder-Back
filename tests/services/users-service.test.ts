@@ -17,6 +17,7 @@ describe("createUser", () => {
 
     try {
       await userService.createUser({
+        name: faker.internet.userName(),
         email: existingUser.email,
         password: faker.internet.password(6),
       });
@@ -28,6 +29,7 @@ describe("createUser", () => {
 
   it("should create user when given email is unique", async () => {
     const user = await userService.createUser({
+      name: faker.internet.userName(),
       email: faker.internet.email(),
       password: faker.internet.password(6),
     });
@@ -48,6 +50,7 @@ describe("createUser", () => {
   it("should hash user password", async () => {
     const rawPassword = faker.internet.password(6);
     const user = await userService.createUser({
+      name: faker.internet.userName(),
       email: faker.internet.email(),
       password: rawPassword,
     });
