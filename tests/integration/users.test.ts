@@ -1,11 +1,11 @@
 import app, { init } from "@/app";
 import { prisma } from "@/config";
-import { duplicatedEmailError } from "@/services/users-service";
+import userService, { duplicatedEmailError } from "@/services/users-service";
 import { faker } from "@faker-js/faker";
 import httpStatus from "http-status";
 import supertest from "supertest";
 import { createUser } from "../factories";
-import { cleanDb } from "../helpers";
+import { cleanDb, generateValidToken } from "../helpers";
 
 beforeAll(async () => {
   await init();
@@ -83,5 +83,33 @@ describe("POST /users", () => {
         }),
       );
     });
+  });
+});
+
+describe("PUT /users", () => {
+  it("should not update user data if token is invalid", async () => {
+    const token = faker.lorem.word();
+    const response = await server.put("/users").set("Authorization", `Bearer ${token}`);
+    
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  it("should update user data if token is valid", async () => {
+    const user = await createUser();
+    const token = await generateValidToken(user);
+    const body = { 
+      name: faker.internet.userName(),
+      email: user.email,
+    };
+    const response = await server.put("/users").set("Authorization", `Bearer ${token}`).send(body);
+    expect(response.status).toBe(httpStatus.OK);
+    expect(response.body).toEqual(
+      expect.objectContaining({
+        id: user.id,
+        name: body.name,
+        email: user.email,
+        image: user.image,
+      }),
+    );
   });
 });

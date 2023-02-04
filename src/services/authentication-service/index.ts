@@ -22,7 +22,7 @@ async function signIn(params: SignInParams): Promise<SignInResult> {
 }
 
 async function getUserOrFail(email: string): Promise<GetUserOrFailResult> {
-  const user = await userRepository.findByEmail(email, { id: true, name: true, email: true, password: true });
+  const user = await userRepository.findByEmail(email, { id: true, name: true, email: true, password: true, image: true });
   if (!user) throw invalidCredentialsError();
 
   return user;
@@ -46,11 +46,11 @@ async function validatePasswordOrFail(password: string, userPassword: string) {
 export type SignInParams = Pick<User, "email" | "password">;
 
 type SignInResult = {
-  user: Pick<User, "id" | "email" | "name">;
+  user: Pick<User, "id" | "email" | "name" | "image">;
   token: string;
 };
 
-type GetUserOrFailResult = Pick<User, "id" | "name" | "email" | "password">;
+type GetUserOrFailResult = Pick<User, "id" | "name" | "email" | "image" | "password">;
 
 const authenticationService = {
   signIn,

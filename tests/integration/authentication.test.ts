@@ -73,6 +73,7 @@ describe("POST /auth/sign-in", () => {
           id: user.id,
           email: user.email,
           name: user.name,
+          image: null,
         });
       });
 
